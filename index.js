@@ -26,6 +26,8 @@ async function run() {
     await client.connect();
 
     const coffeeCollection = client.db('coffeeF').collection('coffee');
+    const userCollection = client.db('coffeeF').collection('user');
+
     // 2. R for read 
     app.get('/coffee', async(req, res) => {
         const cursor = coffeeCollection.find();
@@ -55,7 +57,7 @@ async function run() {
           $set: {
             name: updatedCoffee.name, 
             quantity: updatedCoffee.quantity, 
-            supplier: updatedCoffee.supplier, 
+            supplier: updatedCoffee.supplier,
             taste: updatedCoffee.taste, 
             category: updatedCoffee.category, 
             details: updatedCoffee.details, 
@@ -70,6 +72,21 @@ async function run() {
         const id = req. params.id;
         const query = { _id: new ObjectId(id)};
         const result = await coffeeCollection.deleteOne(query);
+        res.send(result)
+    })
+
+    // user related apis
+    // 2. R for read or get
+    app.get('/user', async(req, res) => {
+        const cursor = userCollection.find();
+        const users = await cursor.toArray();
+        res.send(users);
+    })
+    // 1. C for create or post
+    app.post('/user', async(req, res) => {
+        const user = req.body;
+        console.log(user);
+        const result = await userCollection.insertOne(user);
         res.send(result)
     })
 
